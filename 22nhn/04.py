@@ -1,6 +1,3 @@
-# Authored by: PluxLight
-# TODO refactor: wonhyeongseo
-
 import sys
 limit_number = 200001
 sys.setrecursionlimit(limit_number)

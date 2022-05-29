@@ -1,75 +1,50 @@
-# Authored by: wonhyeongseo
-DELTAS = [(-1, 0), (1, 0), (0, 1), (0, -1)]  # left right up down
+from collections import deque
+import sys
+limit_number = 200001
+sys.setrecursionlimit(limit_number)
 
+def run_maze(maze, query):
+    dx = [-1, 1, 0 ,0]
+    dy = [0, 0, 1, -1]
+    
+    queues = deque([])
 
-def solution(plan: list, queries: list) -> list:
-    """Calculate shortest path given plan and queries."""
+    x_maze = len(maze[0])
+    y_maze = len(maze)
+
+    temp = list(map(str, query.split()))
+    start = [int(temp[0]) - 1, int(temp[1]) - 1]
+    end = [int(temp[2]) - 1, int(temp[3]) - 1]
+    visit = [start]
+    able = list(temp[4])
+
+    queues.append([start[0], start[1], 1])
+
+    while queues:
+        now = queues.popleft()
+
+        if now[:2] == end:
+            return now[2]
+
+        for i in range(4):
+            next_maze = [now[0] + dy[i], now[1] + dx[i]]
+            
+            if  0 <= next_maze[0] < y_maze and 0 <= next_maze[1] < x_maze:
+                if next_maze not in visit and maze[next_maze[0]][next_maze[1]] in able:
+                    queues.append([next_maze[0], next_maze[1], now[2] + 1])
+                    visit.append(next_maze)
+
+    return -1
+
+def solution(maze, queries):
     answer = []
-    for query in queries:
-        entrance, exit_, open_doors = interpret(query)
-        answer.append(
-            shortest_path(
-                make_maze(plan, open_doors),
-                entrance,
-                exit_
-            )
-        )
+
+    for q in queries:
+        answer.append( run_maze(maze, q) )
+
     return answer
 
 
-def interpret(query: str) -> tuple:
-    """Interpret query for post-processing."""
-    t = query.split()
-    sx, sy, ex, ey = [int(i) - 1 for i in t[:-1]]
-    return (sx, sy), (ex, ey), t[-1]
-
-
-def make_maze(plan: list, open_doors: str) -> list:
-    """Label maze based on plan and charcode for open doors."""
-    return [
-        [door in open_doors for door in floor]
-        for floor in plan
-    ]
-
-
-def shortest_path(maze: list, entrance: tuple, exit_: tuple) -> int:
-    """How many steps to reach exit of a maze from entrance."""
-    def make_step(n: int) -> None:
-        """Breadth-first search."""
-        nonlocal to_search
-        if to_search:
-            temp = []
-            for (x, y) in to_search:
-                for (dx, dy) in DELTAS:
-                    if (
-                        -1 < x+dx < floors and
-                        -1 < y+dy < doors and
-                        journal[x+dx][y+dy] == 0 and
-                        maze[x+dx][y+dy]
-                    ):
-                        journal[x+dx][y+dy] = n + 1
-                        temp.append((x+dx, y+dy))
-            to_search = temp
-        else:
-            raise EOFError("No doors to open.")
-
-    floors, doors = len(maze), len(maze[0])
-    journal = [
-        [0 for _ in range(doors)]
-        for _ in range(floors)
-    ]
-    journal[entrance[0]][entrance[1]] = 1
-    to_search = [(entrance[0], entrance[1])]
-
-    n = 0
-    while journal[exit_[0]][exit_[1]] == 0:
-        n += 1
-        try:
-            make_step(n)
-        except EOFError:
-            return -1
-    else:
-        return journal[exit_[0]][exit_[1]]
 
 
 if __name__ == "__main__":
@@ -77,3 +52,17 @@ if __name__ == "__main__":
     queries = ["1 1 1 3 A", "1 3 3 1 A", "1 1 3 3 A", "1 1 3 3 AB"]
 
     print(solution(maze, queries))
+
+
+# a = deque([])
+# a.append('asd')
+# a.append('bds')
+
+# print(a)
+
+
+# a = [1, 2, 3]
+# b = [1, 2]
+
+# if a[:2] == b:
+#     print('ok')
