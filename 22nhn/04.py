@@ -1,5 +1,5 @@
 # Authored by: PluxLight
-# refactor: wonhyeongseo
+# TODO refactor: wonhyeongseo
 
 import sys
 limit_number = 200001
