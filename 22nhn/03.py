@@ -42,8 +42,8 @@ def shortest_path(maze: list, entrance: tuple, exit_: tuple) -> int:
             for (x, y) in to_search:
                 for (dx, dy) in DELTAS:
                     if (
-                        0 < x < floors-1 and
-                        0 < y < doors-1 and
+                        -1 < x+dx < floors and
+                        -1 < y+dy < doors and
                         journal[x+dx][y+dy] == 0 and
                         maze[x+dx][y+dy]
                     ):
